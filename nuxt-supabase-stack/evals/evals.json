@@ -1,0 +1,26 @@
+{
+  "skill_name": "nuxt-supabase-stack",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I want to start a new web app called 'plantswap' — a marketplace where people trade houseplants locally. Set up the project skeleton: Nuxt 4, Supabase/Postgres with Drizzle, BetterAuth for login, Netlify deploy, and Resend for emails. Give me the config files and the auth + db wiring so I can npm install and start building. I'll fill in my own Supabase keys later.",
+      "expected_output": "A scaffolded project: package.json (pinned stack deps), nuxt.config.ts, drizzle.config.ts, netlify.toml (with /api/auth/* redirect), tsconfig, .env.example, server/db/index.ts (pooler-safe), server/db/schema.ts (BetterAuth core tables), server/utils/auth.ts, server/api/auth/[...all].ts, server/middleware/auth.ts, server/utils/email.ts. Plus a note on what to put in .env and how to run typecheck/build.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 1,
+      "prompt": "My app is already on Nuxt 4 + Supabase + Drizzle + BetterAuth. Add a feature: a `listings` table (id, owner = the user, title, description, price in cents, status open/sold, created_at) and a POST /api/listings endpoint to create one, plus GET /api/listings/[id]. Follow whatever conventions the project already uses for auth checks, validation, and RLS.",
+      "expected_output": "A Drizzle table added to schema.ts (cents as integer, timestamptz, indexes declared), a raw-SQL migration that ENABLEs RLS on the new table, a Zod schema in server/utils/schemas.ts, POST route with explicit 401 auth guard + readValidatedBody + guarded insert result, GET route. Mentions declaring indexes in schema (not just migration) and not using db:push.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "prompt": "Set up login for my Nuxt app using BetterAuth — I want email+password and also a passwordless email one-time-code option. It needs to actually send the codes via Resend. Wire up both the server side and a client composable I can call from my login page.",
+      "expected_output": "server/utils/auth.ts with emailAndPassword + emailOTP plugin calling sendEmail, server/api/auth/[...all].ts catch-all, server/middleware/auth.ts populating event.context.user, server/utils/email.ts with Resend sendEmail + otp template, and app/composables/useAuth.ts using createAuthClient with emailOTPClient() plugin registered (builder-function pattern so plugin types survive). Note about the netlify /api/auth/* redirect.",
+      "files": [],
+      "assertions": []
+    }
+  ]
+}

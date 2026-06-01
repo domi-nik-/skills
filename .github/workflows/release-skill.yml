@@ -1,0 +1,162 @@
+name: Release skill
+
+# Releases a single skill when a tag of the form `<skill-name>-v<version>` is
+# pushed, e.g. `nuxt-supabase-stack-v1.0.0`. The tag is the source of truth for
+# the version; SKILL.md is not modified.
+#
+# The job validates the skill, packages it as both `.zip` and `.skill`, and
+# publishes a GitHub Release with those two assets attached.
+
+on:
+  push:
+    tags:
+      # Match <skill>-v<semver>. The skill segment may contain hyphens.
+      - "*-v[0-9]+.[0-9]+.[0-9]+"
+      - "*-v[0-9]+.[0-9]+.[0-9]+-*" # pre-release suffix, e.g. -rc.1
+
+# Least-privilege: only what is needed to create a release.
+permissions:
+  contents: write
+
+concurrency:
+  # One release run per tag; never cancel a release mid-flight.
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Parse tag into skill name and version
+        id: parse
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME}"
+
+          # Split on the last "-v" so skill names may contain hyphens.
+          # nuxt-supabase-stack-v1.0.0 -> skill=nuxt-supabase-stack version=1.0.0
+          if [[ ! "$tag" =~ ^(.+)-v([0-9]+\.[0-9]+\.[0-9]+([-.+].*)?)$ ]]; then
+            echo "::error::Tag '$tag' does not match '<skill>-v<version>' (e.g. my-skill-v1.0.0)."
+            exit 1
+          fi
+          skill="${BASH_REMATCH[1]}"
+          version="${BASH_REMATCH[2]}"
+
+          echo "skill=$skill"     >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Releasing skill '$skill' version '$version'."
+
+      - name: Validate skill
+        id: validate
+        env:
+          SKILL: ${{ steps.parse.outputs.skill }}
+        run: |
+          set -euo pipefail
+
+          # 1. The skill directory must exist.
+          if [[ ! -d "$SKILL" ]]; then
+            echo "::error::No directory named '$SKILL' at the repository root. The tag prefix must match a skill folder."
+            exit 1
+          fi
+
+          # 2. SKILL.md must exist.
+          if [[ ! -f "$SKILL/SKILL.md" ]]; then
+            echo "::error::'$SKILL/SKILL.md' is missing. Every skill must have a SKILL.md."
+            exit 1
+          fi
+
+          # 3. SKILL.md must start with YAML front matter containing name + description.
+          first_line="$(head -n 1 "$SKILL/SKILL.md")"
+          if [[ "$first_line" != "---" ]]; then
+            echo "::error::'$SKILL/SKILL.md' must begin with YAML front matter ('---')."
+            exit 1
+          fi
+          front_matter="$(awk 'NR>1 && /^---[[:space:]]*$/{exit} NR>1{print}' "$SKILL/SKILL.md")"
+
+          # 4. The front-matter name must match the directory (so the tag, folder,
+          #    and declared name can never drift apart).
+          declared_name="$(printf '%s\n' "$front_matter" | sed -n 's/^name:[[:space:]]*//p' | head -n1 | tr -d '"'"'"' ')"
+          if [[ -z "$declared_name" ]]; then
+            echo "::error::'$SKILL/SKILL.md' front matter has no 'name:' field."
+            exit 1
+          fi
+          if [[ "$declared_name" != "$SKILL" ]]; then
+            echo "::error::SKILL.md name '$declared_name' does not match folder '$SKILL'. Rename one so they agree."
+            exit 1
+          fi
+
+          if ! printf '%s\n' "$front_matter" | grep -q '^description:'; then
+            echo "::error::'$SKILL/SKILL.md' front matter has no 'description:' field."
+            exit 1
+          fi
+
+          echo "Validation passed for '$SKILL'."
+
+      - name: Package skill (.zip and .skill)
+        id: package
+        env:
+          SKILL: ${{ steps.parse.outputs.skill }}
+          VERSION: ${{ steps.parse.outputs.version }}
+        run: |
+          set -euo pipefail
+          out="dist"
+          mkdir -p "$out"
+          base="${SKILL}-v${VERSION}"
+
+          # The archive contains the skill directory at its root
+          # (e.g. nuxt-supabase-stack/SKILL.md), which is the layout Claude/Cowork
+          # expects for installation. Dev-only and VCS noise are excluded.
+          zip -r -X "$out/${base}.zip" "$SKILL" \
+            -x "${SKILL}/evals/*" \
+            -x "*/.git/*" \
+            -x "*/.DS_Store" >/dev/null
+
+          # A .skill bundle is the same archive with a .skill extension.
+          cp "$out/${base}.zip" "$out/${base}.skill"
+
+          echo "zip=$out/${base}.zip"     >> "$GITHUB_OUTPUT"
+          echo "skill_bundle=$out/${base}.skill" >> "$GITHUB_OUTPUT"
+          ls -l "$out"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SKILL: ${{ steps.parse.outputs.skill }}
+          VERSION: ${{ steps.parse.outputs.version }}
+          TAG: ${{ github.ref_name }}
+          ZIP: ${{ steps.package.outputs.zip }}
+          BUNDLE: ${{ steps.package.outputs.skill_bundle }}
+        run: |
+          set -euo pipefail
+
+          # Pull the human description straight from SKILL.md front matter.
+          description="$(awk 'NR>1 && /^---[[:space:]]*$/{exit} NR>1{print}' "$SKILL/SKILL.md" \
+            | sed -n 's/^description:[[:space:]]*//p' | head -n1 | tr -d '"' )"
+
+          # Mark pre-releases (tags carrying a -suffix on the version) automatically.
+          prerelease_flag=""
+          if [[ "$VERSION" == *-* ]]; then
+            prerelease_flag="--prerelease"
+          fi
+
+          notes_file="$(mktemp)"
+          {
+            echo "## ${SKILL} v${VERSION}"
+            echo
+            [[ -n "$description" ]] && { echo "$description"; echo; }
+            echo "### Install"
+            echo
+            echo "Download \`${SKILL}-v${VERSION}.skill\` and open it in Claude/Cowork, or unzip \`${SKILL}-v${VERSION}.zip\` into your skills directory."
+          } > "$notes_file"
+
+          gh release create "$TAG" \
+            "$ZIP" \
+            "$BUNDLE" \
+            --title "${SKILL} v${VERSION}" \
+            --notes-file "$notes_file" \
+            $prerelease_flag
