@@ -71,10 +71,11 @@ git checkout -b feat/<skill-name>
 
 - **One folder per skill** at the repo root. The folder name must match the `name:` in its `SKILL.md` (the release workflow enforces this when a tag is pushed). Folder names must not end in `-workspace` — that suffix is reserved for local eval workspaces and is git-ignored.
 - **Marketplace:** every skill has an entry in `.claude-plugin/marketplace.json` (checked by the validator) and an install line in the README.
-- **Per skill:** `SKILL.md` (required), `README.md`, `LICENSE`, and optionally `references/`, `assets/`, `evals/`. `evals/` is excluded from release packages.
+- **Per skill:** `SKILL.md` (required), `README.md`, `LICENSE`, `CHANGELOG.md`, and optionally `references/`, `assets/`, `evals/`. `evals/` is excluded from release packages.
 - **Pull requests only.** Every change goes through a branch (`feat/<skill-name>`, `fix/<skill-name>`, `docs/<topic>`) and a reviewed pull request before it is merged into `main`.
 - **Test runs stay local.** Eval workspaces (`<skill-name>-workspace/`) and generated review pages are git-ignored — they can contain analyses of real third-party sites and should never be published. Local `.env` files are ignored as well.
 - **Validation** runs on every pull request (`.github/workflows/validate.yml`). Run it locally before pushing with `uv run scripts/validate_skills.py` (or `python3 scripts/validate_skills.py` with PyYAML installed).
+- **Project docs:** [`AGENTS.md`](./AGENTS.md) (rules for AI agents and contributors), [`docs/todos.md`](./docs/todos.md), [`docs/entscheidungen.md`](./docs/entscheidungen.md) (decisions) and [`docs/adr/`](./docs/adr).
 - **Releases** are cut by tagging `<skill-name>-v<version>`; see [RELEASING.md](./RELEASING.md).
 
 ## Security note
