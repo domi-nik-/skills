@@ -1,0 +1,9 @@
+schema_version: "1.1"
+name: nuxt-supabase-stack-1
+expected_outcome: |
+  A Drizzle table added to schema.ts (cents as integer, timestamptz, indexes declared), a raw-SQL
+  migration that ENABLEs RLS on the new table, a Zod schema in server/utils/schemas.ts, POST route
+  with explicit 401 auth guard + readValidatedBody + guarded insert result, GET route. Mentions
+  declaring indexes in schema (not just migration) and not using db:push.
+context:
+  scaffold_script: place-files.sh

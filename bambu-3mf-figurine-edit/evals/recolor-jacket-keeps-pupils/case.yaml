@@ -1,0 +1,10 @@
+schema_version: "1.1"
+name: recolor-jacket-keeps-pupils
+expected_outcome: |
+  A new .3mf (different file name) in which the jacket (grey slot, Z 12..24) prints with the black
+  filament of the legs, while the two pupils on the head front (also grey, Z 28..30) stay grey. The
+  response warns that the grey slot also colours the pupils. The unused red slot 4 is removed; the
+  skin slot that prints the unpainted head is kept, so the project ends with 3 filaments
+  (black, grey, skin) and a 3x3 flush matrix. Answer in German.
+context:
+  scaffold_script: place-files.sh
