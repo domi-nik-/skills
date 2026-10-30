@@ -51,51 +51,22 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "Releasing skill '$skill' version '$version'."
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install validator dependencies
+        run: pip install "pyyaml==6.0.2"
+
+      # Same checks as the validate workflow (scripts/validate_skills.py):
+      # folder exists, SKILL.md front matter parses, name matches the folder,
+      # description is present and short enough, links resolve.
       - name: Validate skill
         id: validate
         env:
           SKILL: ${{ steps.parse.outputs.skill }}
-        run: |
-          set -euo pipefail
-
-          # 1. The skill directory must exist.
-          if [[ ! -d "$SKILL" ]]; then
-            echo "::error::No directory named '$SKILL' at the repository root. The tag prefix must match a skill folder."
-            exit 1
-          fi
-
-          # 2. SKILL.md must exist.
-          if [[ ! -f "$SKILL/SKILL.md" ]]; then
-            echo "::error::'$SKILL/SKILL.md' is missing. Every skill must have a SKILL.md."
-            exit 1
-          fi
-
-          # 3. SKILL.md must start with YAML front matter containing name + description.
-          first_line="$(head -n 1 "$SKILL/SKILL.md")"
-          if [[ "$first_line" != "---" ]]; then
-            echo "::error::'$SKILL/SKILL.md' must begin with YAML front matter ('---')."
-            exit 1
-          fi
-          front_matter="$(awk 'NR>1 && /^---[[:space:]]*$/{exit} NR>1{print}' "$SKILL/SKILL.md")"
-
-          # 4. The front-matter name must match the directory (so the tag, folder,
-          #    and declared name can never drift apart).
-          declared_name="$(printf '%s\n' "$front_matter" | sed -n 's/^name:[[:space:]]*//p' | head -n1 | tr -d '"'"'"' ')"
-          if [[ -z "$declared_name" ]]; then
-            echo "::error::'$SKILL/SKILL.md' front matter has no 'name:' field."
-            exit 1
-          fi
-          if [[ "$declared_name" != "$SKILL" ]]; then
-            echo "::error::SKILL.md name '$declared_name' does not match folder '$SKILL'. Rename one so they agree."
-            exit 1
-          fi
-
-          if ! printf '%s\n' "$front_matter" | grep -q '^description:'; then
-            echo "::error::'$SKILL/SKILL.md' front matter has no 'description:' field."
-            exit 1
-          fi
-
-          echo "Validation passed for '$SKILL'."
+        run: python scripts/validate_skills.py "$SKILL"
 
       - name: Package skill (.zip and .skill)
         id: package
@@ -134,9 +105,9 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Pull the human description straight from SKILL.md front matter.
-          description="$(awk 'NR>1 && /^---[[:space:]]*$/{exit} NR>1{print}' "$SKILL/SKILL.md" \
-            | sed -n 's/^description:[[:space:]]*//p' | head -n1 | tr -d '"' )"
+          # Pull the human description from SKILL.md front matter. Parsed as YAML,
+          # so folded/multi-line descriptions (`description: >-`) work too.
+          description="$(python scripts/validate_skills.py --field description "$SKILL")"
 
           # Mark pre-releases (tags carrying a -suffix on the version) automatically.
           prerelease_flag=""

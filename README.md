@@ -63,6 +63,7 @@ git checkout -b feat/<skill-name>
 - **Per skill:** `SKILL.md` (required), `README.md`, `LICENSE`, and optionally `references/`, `assets/`, `evals/`. `evals/` is excluded from release packages.
 - **Pull requests only.** Every change goes through a branch (`feat/<skill-name>`, `fix/<skill-name>`, `docs/<topic>`) and a reviewed pull request before it is merged into `main`.
 - **Test runs stay local.** Eval workspaces (`<skill-name>-workspace/`) and generated review pages are git-ignored — they can contain analyses of real third-party sites and should never be published. Local `.env` files are ignored as well.
+- **Validation** runs on every pull request (`.github/workflows/validate.yml`). Run it locally before pushing with `uv run scripts/validate_skills.py` (or `python3 scripts/validate_skills.py` with PyYAML installed).
 - **Releases** are cut by tagging `<skill-name>-v<version>`; see [RELEASING.md](./RELEASING.md).
 
 ## Security note
