@@ -45,7 +45,17 @@ Uploaded skills are private to your account. On Team/Enterprise plans you can sh
 
 ### Claude Code
 
-Point Claude Code at a skill folder, or install it from this repo as a plugin/marketplace source. See each skill's own README for specifics.
+This repo is a Claude Code plugin marketplace; every skill is its own plugin, so you install only what you need. In Claude Code (2.1.275 or later):
+
+```
+/plugin install bambu-3mf-figurine-edit --marketplace domi-nik-/skills
+/plugin install nuxt-supabase-stack --marketplace domi-nik-/skills
+/plugin install webshop-analyse --marketplace domi-nik-/skills
+```
+
+On older versions, add the marketplace first with `/plugin marketplace add domi-nik-/skills`, then `/plugin install <skill-name>@domi-nik-skills`. `/plugin marketplace update domi-nik-skills` pulls in new versions.
+
+To try a skill without installing, copy its folder into `~/.claude/skills/` (all projects) or `.claude/skills/` (one project).
 
 ## Working on this repo
 
@@ -60,6 +70,7 @@ git checkout -b feat/<skill-name>
 **Conventions**
 
 - **One folder per skill** at the repo root. The folder name must match the `name:` in its `SKILL.md` (the release workflow enforces this when a tag is pushed). Folder names must not end in `-workspace` — that suffix is reserved for local eval workspaces and is git-ignored.
+- **Marketplace:** every skill has an entry in `.claude-plugin/marketplace.json` (checked by the validator) and an install line in the README.
 - **Per skill:** `SKILL.md` (required), `README.md`, `LICENSE`, and optionally `references/`, `assets/`, `evals/`. `evals/` is excluded from release packages.
 - **Pull requests only.** Every change goes through a branch (`feat/<skill-name>`, `fix/<skill-name>`, `docs/<topic>`) and a reviewed pull request before it is merged into `main`.
 - **Test runs stay local.** Eval workspaces (`<skill-name>-workspace/`) and generated review pages are git-ignored — they can contain analyses of real third-party sites and should never be published. Local `.env` files are ignored as well.
