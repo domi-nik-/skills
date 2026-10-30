@@ -32,9 +32,12 @@ git push origin nuxt-supabase-stack-v1.0.0
 Pushing the tag triggers `.github/workflows/release-skill.yml`, which:
 
 1. Parses the skill name and version from the tag.
-2. Validates the skill — folder exists, `SKILL.md` exists and starts with YAML
-   front matter, and the front-matter `name:` matches the folder. The release
-   fails fast if any check fails, so a broken skill is never published.
+2. Validates the skill with `scripts/validate_skills.py` — folder exists,
+   `SKILL.md` front matter parses as YAML, `name:` matches the folder,
+   `description:` is present and at most 1024 characters, and relative links
+   resolve. The release fails fast if any check fails, so a broken skill is
+   never published. The same checks run on every pull request
+   (`.github/workflows/validate.yml`), so problems usually surface earlier.
 3. Packages the skill folder (excluding `evals/`, `.git`, `.DS_Store`) as both
    `<skill>-v<version>.zip` and `<skill>-v<version>.skill`.
 4. Creates a GitHub Release for the tag with both files attached and notes
