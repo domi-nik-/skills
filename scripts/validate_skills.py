@@ -17,17 +17,18 @@ Checks per skill:
   - the skill is listed in the root README table
   - relative links in the skill's Markdown files point to existing files
   - bundled Python scripts parse
+  - eval case folders under evals/ follow the format `claude plugin eval` and
+    skill-creator read (prompt.md, case.yaml, graders/, optional files/)
 and once for the repo: .claude-plugin/marketplace.json lists exactly the skills
 that exist, each as its own plugin pointing at its folder.
 
 Exits non-zero with GitHub Actions `::error::` lines if any check fails.
 """
 import argparse
+import json
 import re
 import sys
 from pathlib import Path
-
-import json
 
 import yaml
 
@@ -37,6 +38,9 @@ MAX_DESCRIPTION = 1024
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)")
 FENCE_RE = re.compile(r"^(```|~~~).*?^\1", re.S | re.M)
 INLINE_CODE_RE = re.compile(r"`[^`\n]+`")
+CASE_NAME_RE = re.compile(r"^[a-z][a-z0-9-]*$")
+RESERVED_CASE_NAMES = {"results", "mocks", "node_modules", "files", "true", "false", "null"}
+PROMPT_KEYS = {"tags", "max_turns", "timeout_seconds", "allowed_tools"}
 
 
 def error(path, msg):
@@ -44,9 +48,9 @@ def error(path, msg):
     print(f"::error file={rel}::{msg}")
 
 
-def front_matter(skill_md):
-    """Return the parsed front matter of SKILL.md, or raise ValueError."""
-    text = skill_md.read_text(encoding="utf-8")
+def front_matter(md):
+    """Return the parsed YAML front matter of a Markdown file, or raise ValueError."""
+    text = md.read_text(encoding="utf-8")
     lines = text.splitlines()
     if not lines or lines[0].strip() != "---":
         raise ValueError("must begin with YAML front matter ('---')")
@@ -77,6 +81,60 @@ def check_links(md):
         if path and not (md.parent / path).exists():
             error(md, f"broken relative link '{target}'")
             ok = False
+    return ok
+
+
+def check_eval_cases(skill):
+    """Each folder under evals/ is one test case in the `claude plugin eval` layout.
+    A malformed case fails to load there, so catch it here."""
+    ok = True
+    evals = skill / "evals"
+    if not evals.is_dir():
+        return True
+    for case in sorted(p for p in evals.iterdir() if p.is_dir()):
+        def bad(path, msg):
+            nonlocal ok
+            error(path, msg)
+            ok = False
+
+        if not CASE_NAME_RE.match(case.name) or case.name in RESERVED_CASE_NAMES:
+            bad(case, f"invalid case name '{case.name}' (lowercase, digits, hyphens; not reserved)")
+        prompt = case / "prompt.md"
+        if not prompt.exists():
+            bad(case, "case has no prompt.md")
+        else:
+            try:
+                unknown = set(front_matter(prompt)) - PROMPT_KEYS
+                if unknown:
+                    bad(prompt, f"unknown settings {sorted(unknown)} (allowed: {sorted(PROMPT_KEYS)})")
+            except ValueError as e:
+                bad(prompt, str(e))
+        spec_path = case / "case.yaml"
+        try:
+            spec = yaml.safe_load(spec_path.read_text(encoding="utf-8"))
+            if not isinstance(spec, dict):
+                raise ValueError("case.yaml must be a YAML mapping")
+        except (OSError, ValueError, yaml.YAMLError) as e:
+            bad(spec_path, f"cannot read case.yaml: {e}")
+            spec = {}
+        if spec and spec.get("schema_version") != "1.1":
+            bad(spec_path, "schema_version must be the quoted string \"1.1\"")
+        if spec and spec.get("name") != case.name:
+            bad(spec_path, f"name '{spec.get('name')}' does not match folder '{case.name}'")
+        graders = sorted((case / "graders").glob("*.md"))
+        if not graders:
+            bad(case, "case has no graders (a case without one fails to load)")
+        for g in graders:
+            try:
+                if "type" not in front_matter(g):
+                    bad(g, "grader front matter has no 'type'")
+            except ValueError as e:
+                bad(g, str(e))
+        script = (spec.get("context") or {}).get("scaffold_script") if spec else None
+        if (case / "files").is_dir() and not script:
+            bad(spec_path, "case has files/ but no context.scaffold_script to place them")
+        if script and not (case / script).exists():
+            bad(spec_path, f"scaffold_script '{script}' does not exist")
     return ok
 
 
@@ -119,6 +177,8 @@ def validate(skill, readme_text):
 
     for md in sorted(skill.rglob("*.md")):
         ok &= check_links(md)
+
+    ok &= check_eval_cases(skill)
 
     for script in sorted(skill.rglob("*.py")):
         try:

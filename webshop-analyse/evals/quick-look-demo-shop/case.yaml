@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: quick-look-demo-shop
+expected_outcome: |
+  A shareable document (Claude doc or Markdown file) with the standard structure from
+  references/abschnitte.md, built from pages that were actually fetched. Because the demo shop is
+  not a German business, German-specific parts (legal, funding, DE marketplaces) are adapted or
+  marked as not checked. No invented search volumes or CPCs. A short chat answer (≈120 words max).

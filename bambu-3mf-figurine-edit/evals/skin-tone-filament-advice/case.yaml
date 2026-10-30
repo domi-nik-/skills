@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: skin-tone-filament-advice
+expected_outcome: |
+  Advice in German: Bambu has no real warm skin tone; recommends Polymaker Panchroma Matte
+  skin-tone colours (e.g. Pastel Beige or Pastel Peanut) with current availability checked by
+  web search; notes that non-Bambu spools have no RFID, so the AMS slot must be set to Generic PLA
+  or the matching profile; mentions the cardboard-spool / refill caveat for the AMS.

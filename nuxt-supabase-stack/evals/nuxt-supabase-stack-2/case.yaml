@@ -1,0 +1,10 @@
+schema_version: "1.1"
+name: nuxt-supabase-stack-2
+expected_outcome: |
+  server/utils/auth.ts with emailAndPassword + emailOTP plugin calling sendEmail,
+  server/api/auth/[...all].ts catch-all, server/middleware/auth.ts populating event.context.user,
+  server/utils/email.ts with Resend sendEmail + otp template, and app/composables/useAuth.ts using
+  createAuthClient with emailOTPClient() plugin registered (builder-function pattern so plugin types
+  survive). Note about the netlify /api/auth/* redirect.
+context:
+  scaffold_script: place-files.sh
