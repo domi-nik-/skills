@@ -17,6 +17,8 @@ Checks per skill:
   - the skill is listed in the root README table
   - relative links in the skill's Markdown files point to existing files
   - bundled Python scripts parse
+and once for the repo: .claude-plugin/marketplace.json lists exactly the skills
+that exist, each as its own plugin pointing at its folder.
 
 Exits non-zero with GitHub Actions `::error::` lines if any check fails.
 """
@@ -24,6 +26,8 @@ import argparse
 import re
 import sys
 from pathlib import Path
+
+import json
 
 import yaml
 
@@ -128,6 +132,31 @@ def validate(skill, readme_text):
     return ok
 
 
+def check_marketplace(skills):
+    """Every skill must be its own plugin in marketplace.json, and vice versa."""
+    path = ROOT / ".claude-plugin" / "marketplace.json"
+    try:
+        plugins = json.loads(path.read_text(encoding="utf-8"))["plugins"]
+    except (OSError, ValueError, KeyError) as e:
+        error(path, f"cannot read plugins: {e}")
+        return False
+    ok = True
+    listed = set()
+    for p in plugins:
+        name = p.get("name")
+        listed.add(name)
+        if p.get("skills") != [f"./{name}"]:
+            error(path, f"plugin '{name}' must have \"skills\": [\"./{name}\"]")
+            ok = False
+        if not (ROOT / str(name) / "SKILL.md").exists():
+            error(path, f"plugin '{name}' has no skill folder")
+            ok = False
+    for name in sorted({s.name for s in skills} - listed):
+        error(path, f"skill '{name}' is missing from marketplace.json")
+        ok = False
+    return ok
+
+
 def main():
     ap = argparse.ArgumentParser(description="Validate skills in this repo.")
     ap.add_argument("skills", nargs="*", help="skill folder names (default: all)")
@@ -150,6 +179,8 @@ def main():
     for skill in skills:
         ok &= validate(skill, readme_text)
     ok &= check_links(ROOT / "README.md")
+    if not a.skills:
+        ok &= check_marketplace(skills)
     return 0 if ok else 1
 
 

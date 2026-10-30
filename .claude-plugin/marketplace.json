@@ -1,0 +1,32 @@
+{
+  "name": "domi-nik-skills",
+  "owner": {
+    "name": "Dominik Bittl"
+  },
+  "metadata": {
+    "description": "Agent Skills by Dominik Bittl: Bambu Studio 3MF editing, a Nuxt 4 + Supabase stack, and webshop/business analysis."
+  },
+  "plugins": [
+    {
+      "name": "bambu-3mf-figurine-edit",
+      "description": "Recolor parts, remove unused filament slots and simplify painted Bambu Studio 3MF projects, and match colors to real filaments.",
+      "source": "./",
+      "strict": false,
+      "skills": ["./bambu-3mf-figurine-edit"]
+    },
+    {
+      "name": "nuxt-supabase-stack",
+      "description": "Scaffold and build Nuxt 4 apps on Supabase/Postgres with Drizzle, BetterAuth, Netlify and Resend.",
+      "source": "./",
+      "strict": false,
+      "skills": ["./nuxt-supabase-stack"]
+    },
+    {
+      "name": "webshop-analyse",
+      "description": "(German) Sourced business, website and SEO analysis of a shop or company URL with a prioritised action plan.",
+      "source": "./",
+      "strict": false,
+      "skills": ["./webshop-analyse"]
+    }
+  ]
+}
