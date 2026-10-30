@@ -24,12 +24,19 @@ Always work on an extracted copy: `python3 -I bambu3mf.py unpack <in.3mf> work/`
 
 - `3D/Objects/object_1.model`: each `<triangle>` has `paint_color` = slot code.
   Slot 1 = `4`, 2 = `8`, 3 = `0C`, 4 = `1C`, 5 = `2C`, ... (n>=3: hex(n-3)+`C`).
-  No attribute = the object's default extruder. Longer codes are sub-triangle
-  paint; the tool leaves those alone and `prune` refuses to run on them.
+  No attribute = the object's default extruder (`<metadata key="extruder">` in
+  `Metadata/model_settings.config`). Longer codes are sub-triangle paint; the
+  tool leaves those alone and `prune` refuses to run on them. Other triangle
+  attributes (`paint_supports`, `paint_seam`) are kept by `repaint`/`prune` but
+  cannot survive `simplify`.
 - `Metadata/project_settings.config` (JSON): `filament_colour` (#RRGGBBAA) and
   every per-filament setting. Arrays are length n (per slot), n*2 (per slot x
   extruder variant), n*n (`flush_volumes_matrix`) or n+2
-  (`different_settings_to_system`, `inherits_group`). `prune` handles all of them.
+  (`different_settings_to_system`, `inherits_group`). `prune` picks per-filament
+  settings by key name, never by array length alone, because printer settings
+  (bed outline, machine limits, extruder variants) can have the same length.
+  After a Bambu Studio update, new per-filament keys without the `filament_`
+  prefix would need adding to `FILAMENT_KEYS` in the script.
 - Object-local coordinates: Z up, the figure's front faces -Y. Use `info` to see
   the bounding box and the Z range of each slot.
 
@@ -49,9 +56,9 @@ Always work on an extracted copy: `python3 -I bambu3mf.py unpack <in.3mf> work/`
    the user will load, so Bambu Studio shows a realistic impression.
 5. `prune work` once slots are unused (fewer filaments, less purging).
 6. If the triangle count is over ~1M (Bambu warns "could be slow"), run
-   `simplify work --target 400000`. It keeps volume and transfers the paint by
-   nearest-face majority vote; check that the printed per-colour areas barely
-   change and re-render the face area (`--zmin`). Prefer this to Bambu's own
+   `simplify work --target 400000`. It transfers the paint by nearest-face
+   majority vote; check that the printed per-colour areas barely change (on the
+   reference figurine: within 3 mm2) and re-render the face area (`--zmin`). Prefer this to Bambu's own
    "Simplify model" button, which is not known to keep the paint.
 7. `pack work out.3mf`, send it, and give a different file name per variant so the
    user can compare versions side by side.
