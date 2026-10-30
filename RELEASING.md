@@ -24,6 +24,8 @@ Examples:
 
 ## How to cut a release
 
+First, in the skill's `CHANGELOG.md`, rename `## [Unreleased]` to `## [<version>] - <date>` and add a fresh empty `## [Unreleased]` above it; merge that through a pull request. The release notes include that section.
+
 ```bash
 git tag nuxt-supabase-stack-v1.0.0
 git push origin nuxt-supabase-stack-v1.0.0
@@ -41,7 +43,8 @@ Pushing the tag triggers `.github/workflows/release-skill.yml`, which:
 3. Packages the skill folder (excluding `evals/`, `tests/`, `.git`, `.DS_Store`) as both
    `<skill>-v<version>.zip` and `<skill>-v<version>.skill`.
 4. Creates a GitHub Release for the tag with both files attached and notes
-   pulled from the skill's description.
+   pulled from the skill's description and its `CHANGELOG.md` section for
+   that version.
 
 ## Installing a released skill
 

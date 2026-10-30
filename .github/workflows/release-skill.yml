@@ -121,6 +121,16 @@ jobs:
             echo "## ${SKILL} v${VERSION}"
             echo
             [[ -n "$description" ]] && { echo "$description"; echo; }
+            # The matching section of the skill's CHANGELOG.md, if there is one.
+            if [[ -f "$SKILL/CHANGELOG.md" ]]; then
+              changes="$(awk -v v="$VERSION" '
+                /^## \[/ { if (found) exit; if (index($0, "## [" v "]") == 1) { found=1; next } }
+                found' "$SKILL/CHANGELOG.md")"
+              if [[ -n "${changes//[[:space:]]/}" ]]; then
+                echo "### Changes"
+                printf '%s\n\n' "$changes"
+              fi
+            fi
             echo "### Install"
             echo
             echo "Download \`${SKILL}-v${VERSION}.skill\` and open it in Claude/Cowork, or unzip \`${SKILL}-v${VERSION}.zip\` into your skills directory."
