@@ -6,6 +6,7 @@ Contents:
 3. Environment variables
 4. Netlify deployment
 5. Dev workflow & scripts
+6. Node.js version
 
 ## 1. Directory layout (Nuxt 4)
 
@@ -35,6 +36,7 @@ project/
 ├── nuxt.config.ts
 ├── drizzle.config.ts
 ├── vitest.config.ts
+├── eslint.config.mjs
 ├── netlify.toml
 └── .env                         # never committed
 ```
@@ -43,13 +45,15 @@ project/
 
 **nuxt.config.ts** — register modules (`@nuxtjs/tailwindcss`, `@nuxtjs/i18n`, `@nuxtjs/color-mode`, `@nuxt/eslint`), set the Nitro preset, and expose runtime config. Keep server-only secrets at the top level of `runtimeConfig` and only browser-safe values under `runtimeConfig.public`. Set `typescript: { strict: true }`. See `assets/nuxt.config.ts`.
 
-**tsconfig.json** — thin; it only references the four generated `.nuxt/tsconfig.*.json` files. `npm run postinstall` (`nuxt prepare`) generates them, so run `npm install` before `npm run typecheck`. Consider enabling `noUncheckedIndexedAccess` for real null-safety on array/record access — it catches a class of runtime bugs, at the cost of more explicit guards.
+**tsconfig.json** — see `assets/tsconfig.json`. Thin; it only references the four generated `.nuxt/tsconfig.*.json` files. `npm run postinstall` (`nuxt prepare`) generates them, so run `npm install` before `npm run typecheck`. Consider enabling `noUncheckedIndexedAccess` for real null-safety on array/record access — it catches a class of runtime bugs, at the cost of more explicit guards.
 
 **drizzle.config.ts** — points `schema` at `server/db/schema.ts`, `out` at `supabase/migrations`, dialect `postgresql`, url from `DATABASE_URL`. See `assets/drizzle.config.ts`.
 
-**vitest.config.ts** — `environment: 'node'`, `include: ['tests/**/*.test.ts']`. Keep unit tests on pure logic (validation, money math, pure helpers); they run without a DB.
+**vitest.config.ts** — `environment: 'node'`, `include: ['tests/**/*.test.ts']` (see `assets/vitest.config.ts`). Keep unit tests on pure logic (validation, money math, pure helpers); they run without a DB.
 
-**netlify.toml** — `command = "npm run build"`, `publish = "dist"`, Node 22, esbuild bundler, and a redirect so `/api/auth/*` reaches the server function. See `assets/netlify.toml`.
+**eslint.config.mjs** — flat config that wraps the one `@nuxt/eslint` generates into `.nuxt/` (see `assets/eslint.config.mjs`), so `npm run lint` needs `nuxt prepare` to have run.
+
+**netlify.toml** — `command = "npm run build"`, `publish = "dist"`, Node 24, esbuild bundler, and a redirect so `/api/auth/*` reaches the server function. See `assets/netlify.toml`.
 
 ## 3. Environment variables
 
@@ -91,3 +95,11 @@ npm run db:studio    # Drizzle Studio (read-only browsing)
 ```
 
 Note the deliberately scary name `db:push:DANGEROUS_DISABLES_RLS` — see database-and-rls.md for why `drizzle-kit push` is unsafe against a database that uses RLS.
+
+## 6. Node.js version
+
+Nuxt needs Node `^22.22.3 || ^24.15.0 || >=26.0.0` (the `engines` range in `assets/package.json` mirrors it) and recommends an even-numbered, active LTS release. The templates pin **Node 24** for Netlify and CI because Netlify Functions run on AWS Lambda, which supports `nodejs24.x` until April 2028; Node 22 leaves Lambda support in April 2027. Move to Node 26 once Lambda's `nodejs26.x` runtime is generally available (planned for November 2026; it is in preview until then).
+
+Use the same major version locally (e.g. `nvm use 24`) so the lockfile is produced by the same npm generation that CI and Netlify use.
+
+Known build warning: with Nuxt 4.6 and `@nuxtjs/tailwindcss` 6.14 the build prints `The PostCSS plugin tailwindcss/nesting could not be loaded`. It is harmless; the CSS is generated normally.

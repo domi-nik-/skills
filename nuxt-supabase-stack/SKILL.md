@@ -28,13 +28,13 @@ Figure out which job applies from the request, then act. A request like "start a
 | Validation | Zod | One schema reused by API routes and tests |
 | Tests | Vitest | Fast unit tests on pure logic |
 
-Pin the working dependency set from `assets/package.json` rather than letting `npm install <latest>` pull majors that drift apart. The combination in that file is known to work together.
+Pin the working dependency set from `assets/package.json` rather than letting `npm install <latest>` pull majors that drift apart. The combination in that file is known to work together on Node 22, 24 and 26. Keep TypeScript on 6.x: TypeScript 7 breaks `vue-tsc` and `typescript-eslint` (via `@nuxt/eslint` and `@nuxtjs/i18n`).
 
 ## Scaffolding a new project
 
 Work through these in order. Each step has a copy-ready template in `assets/` — read it, then adapt names to the user's project. Don't dump all files blindly; explain what each piece does as you place it, because the user will maintain it.
 
-1. **Project skeleton & config** — `package.json`, `nuxt.config.ts`, `tsconfig.json`, `drizzle.config.ts`, `vitest.config.ts`, `netlify.toml`, `.env.example`, `.gitignore`. Templates in `assets/`. See `references/project-setup.md` for what each config does and the gotchas (Nuxt 4 `app/` dir, Netlify auth redirect, the dangerous `db:push` script naming).
+1. **Project skeleton & config** — `package.json`, `nuxt.config.ts`, `tsconfig.json`, `drizzle.config.ts`, `vitest.config.ts`, `eslint.config.mjs`, `netlify.toml`, `.env.example`, `.gitignore`. Templates in `assets/`. Needs Node 24 LTS (see `references/project-setup.md` §6); check `node -v` first. See `references/project-setup.md` for what each config does and the gotchas (Nuxt 4 `app/` dir, Netlify auth redirect, the dangerous `db:push` script naming).
 2. **Database layer** — `server/db/index.ts` (Drizzle client with the Supabase-pooler `prepare:false` guard) and `server/db/schema.ts` (start from the BetterAuth core tables). See `references/database-and-rls.md`.
 3. **Auth** — `server/utils/auth.ts` (BetterAuth instance), `server/api/auth/[...all].ts` (catch-all handler), `server/middleware/auth.ts` (attaches `event.context.user`). See `references/auth.md`.
 4. **Email** — `server/utils/email.ts` (Resend `sendEmail` + HTML template helpers). See `references/email.md`.
