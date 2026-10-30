@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: seo-only-scope
+expected_outcome: |
+  Only the SEO-related sections (technical/on-page SEO, SEO strategy & keyword clusters, plus a
+  short summary and action list) — no SWOT, Google Ads, marketplaces, legal or cost sections.
+  Findings come from fetched pages (titles, meta descriptions, headings, structured data,
+  robots/sitemap). No invented search volumes.

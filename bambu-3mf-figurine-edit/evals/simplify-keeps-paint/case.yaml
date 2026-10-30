@@ -1,0 +1,11 @@
+schema_version: "1.1"
+name: simplify-keeps-paint
+expected_outcome: |
+  A new .3mf with roughly 5000 triangles (not more than ~5250) produced with the bundled
+  `simplify` command, with the paint transferred: the black legs/jacket, the grey jacket and pupils,
+  and the unpainted skin head are all still present with per-colour areas close to the original.
+  The response reports the before/after areas per colour, mentions that support/seam painting
+  would be lost (there is none here) or that results were checked with renders, and advises
+  checking the preview in Bambu Studio before printing.
+context:
+  scaffold_script: place-files.sh

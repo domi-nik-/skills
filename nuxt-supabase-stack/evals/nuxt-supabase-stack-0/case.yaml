@@ -1,0 +1,9 @@
+schema_version: "1.1"
+name: nuxt-supabase-stack-0
+expected_outcome: |
+  A scaffolded project: package.json (the skill's pinned dependency set), nuxt.config.ts,
+  tsconfig.json, drizzle.config.ts, vitest.config.ts, eslint.config.mjs, netlify.toml (Node 24,
+  /api/auth/* redirect), .env.example, server/db/index.ts (pooler-safe), server/db/schema.ts
+  (BetterAuth core tables), server/utils/auth.ts, server/api/auth/[...all].ts,
+  server/middleware/auth.ts, server/utils/email.ts. Plus a note on what to put in .env and how to
+  run typecheck/build.
