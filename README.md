@@ -8,6 +8,7 @@ Each skill is a self-contained folder with a `SKILL.md` plus any reference docs 
 
 | Skill | What it does |
 |-------|--------------|
+| [**bambu-3mf-figurine-edit**](./bambu-3mf-figurine-edit) | Recolor parts, remove unused filament slots and simplify painted Bambu Studio 3MF projects (e.g. MakerLab figurines), and match colors to real Bambu/Polymaker filaments. |
 | [**nuxt-supabase-stack**](./nuxt-supabase-stack) | Scaffold and build full-stack Nuxt 4 (Vue 3, SSR) apps on Supabase/Postgres with Drizzle ORM, BetterAuth, Netlify, and Resend — and keep feature work consistent with the stack's conventions. |
 
 _More skills will be added here over time._
