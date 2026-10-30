@@ -32,3 +32,27 @@ jobs:
 
       - name: Validate all skills
         run: python scripts/validate_skills.py
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # The dependencies the bundled scripts need at run time (see each skill's README).
+      - name: Install test dependencies
+        run: pip install numpy matplotlib scipy fast-simplification
+
+      - name: Run skill tests
+        run: |
+          set -euo pipefail
+          for dir in */tests; do
+            echo "::group::$dir"
+            python -m unittest discover -s "$dir" -v
+            echo "::endgroup::"
+          done

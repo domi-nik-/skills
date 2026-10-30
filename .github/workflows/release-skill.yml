@@ -81,9 +81,10 @@ jobs:
 
           # The archive contains the skill directory at its root
           # (e.g. nuxt-supabase-stack/SKILL.md), which is the layout Claude/Cowork
-          # expects for installation. Dev-only and VCS noise are excluded.
+          # expects for installation. Dev-only files (evals/, tests/) and VCS noise are excluded.
           zip -r -X "$out/${base}.zip" "$SKILL" \
             -x "${SKILL}/evals/*" \
+            -x "${SKILL}/tests/*" \
             -x "*/.git/*" \
             -x "*/.DS_Store" >/dev/null
 
