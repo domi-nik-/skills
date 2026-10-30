@@ -9,6 +9,7 @@ Each skill is a self-contained folder with a `SKILL.md` plus any reference docs 
 | Skill | What it does |
 |-------|--------------|
 | [**nuxt-supabase-stack**](./nuxt-supabase-stack) | Scaffold and build full-stack Nuxt 4 (Vue 3, SSR) apps on Supabase/Postgres with Drizzle ORM, BetterAuth, Netlify, and Resend — and keep feature work consistent with the stack's conventions. |
+| [**webshop-analyse**](./webshop-analyse) | *(German)* Sourced business, website and SEO analysis of a shop or company URL — market & competitors, SWOT, UX/conversion, technical SEO, passive tech/security check, German legal quick wins, social media, Google Ads, marketplaces & distributors, cost levers and a prioritised action plan. |
 
 _More skills will be added here over time._
 
