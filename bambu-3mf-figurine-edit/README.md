@@ -18,6 +18,14 @@ bambu-3mf-figurine-edit/
 
 `bambu3mf.py` needs Python 3 with numpy and matplotlib; `simplify` also needs `fast-simplification` and `scipy` (installed from PyPI). It only reads and writes the 3MF you give it and makes no network calls.
 
+## Tests
+
+`tests/test_bambu3mf.py` runs every command of the tool on a small synthetic figurine (built by `evals/make_figurine_fixture.py`) and checks the results, including the renumbering done by `prune`. From the repo root:
+
+```bash
+python3 -m unittest discover -s bambu-3mf-figurine-edit/tests
+```
+
 ## Limits
 
 - One painted object per project.

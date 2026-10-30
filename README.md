@@ -71,7 +71,8 @@ git checkout -b feat/<skill-name>
 
 - **One folder per skill** at the repo root. The folder name must match the `name:` in its `SKILL.md` (the release workflow enforces this when a tag is pushed). Folder names must not end in `-workspace` — that suffix is reserved for local eval workspaces and is git-ignored.
 - **Marketplace:** every skill has an entry in `.claude-plugin/marketplace.json` (checked by the validator) and an install line in the README.
-- **Per skill:** `SKILL.md` (required), `README.md`, `LICENSE`, and optionally `references/`, `assets/`, `evals/`. `evals/` is excluded from release packages.
+- **Per skill:** `SKILL.md` (required), `README.md`, `LICENSE`, and optionally `references/`, `assets/`, `evals/`, `tests/`. `evals/` and `tests/` are excluded from release packages.
+- **Tests:** unit tests for bundled scripts live in `<skill>/tests/` (stdlib `unittest`) and run in CI on every pull request. Locally: `python3 -m unittest discover -s <skill>/tests`.
 - **Evals:** one folder per test case under `<skill>/evals/` (`prompt.md`, `case.yaml`, one assertion per file in `graders/`, input files in `files/`), the layout both skill-creator and `claude plugin eval` read; the validator checks the format. To run them from a skill folder: `claude plugin eval . --scaffold --allow-tools Write,Edit,Bash` (add `WebFetch,WebSearch` for `webshop-analyse`). These are real, billed model runs, each case with and without the skill.
 - **Pull requests only.** Every change goes through a branch (`feat/<skill-name>`, `fix/<skill-name>`, `docs/<topic>`) and a reviewed pull request before it is merged into `main`.
 - **Test runs stay local.** Eval workspaces (`<skill-name>-workspace/`) and generated review pages are git-ignored — they can contain analyses of real third-party sites and should never be published. Local `.env` files are ignored as well.

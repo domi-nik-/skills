@@ -38,7 +38,7 @@ Pushing the tag triggers `.github/workflows/release-skill.yml`, which:
    resolve. The release fails fast if any check fails, so a broken skill is
    never published. The same checks run on every pull request
    (`.github/workflows/validate.yml`), so problems usually surface earlier.
-3. Packages the skill folder (excluding `evals/`, `.git`, `.DS_Store`) as both
+3. Packages the skill folder (excluding `evals/`, `tests/`, `.git`, `.DS_Store`) as both
    `<skill>-v<version>.zip` and `<skill>-v<version>.skill`.
 4. Creates a GitHub Release for the tag with both files attached and notes
    pulled from the skill's description.
