@@ -46,6 +46,24 @@ Uploaded skills are private to your account. On Team/Enterprise plans you can sh
 
 Point Claude Code at a skill folder, or install it from this repo as a plugin/marketplace source. See each skill's own README for specifics.
 
+## Working on this repo
+
+This repo is the single source of truth for my skills — I keep a local clone and develop every skill inside it rather than in scattered folders.
+
+```bash
+git clone https://github.com/domi-nik-/skills.git
+cd skills
+git checkout -b feat/<skill-name>
+```
+
+**Conventions**
+
+- **One folder per skill** at the repo root. The folder name must match the `name:` in its `SKILL.md` (the release workflow enforces this when a tag is pushed). Folder names must not end in `-workspace` — that suffix is reserved for local eval workspaces and is git-ignored.
+- **Per skill:** `SKILL.md` (required), `README.md`, `LICENSE`, and optionally `references/`, `assets/`, `evals/`. `evals/` is excluded from release packages.
+- **Pull requests only.** Every change goes through a branch (`feat/<skill-name>`, `fix/<skill-name>`, `docs/<topic>`) and a reviewed pull request before it is merged into `main`.
+- **Test runs stay local.** Eval workspaces (`<skill-name>-workspace/`) and generated review pages are git-ignored — they can contain analyses of real third-party sites and should never be published. Local `.env` files are ignored as well.
+- **Releases** are cut by tagging `<skill-name>-v<version>`; see [RELEASING.md](./RELEASING.md).
+
 ## Security note
 
 Only install skills from sources you trust, and skim a skill's contents before enabling it — pay attention to any bundled scripts, network calls, or third-party package installs. The skills here contain instructions and config templates; check each skill's README for details on what it bundles.

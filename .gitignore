@@ -1,0 +1,16 @@
+# Local test runs of skills (skill-creator workspaces, review pages).
+# They can contain analyses of real third-party sites — never commit them.
+# Anchored to the repo root, where skill-creator creates them.
+/*-workspace/
+/review-iteration-*.html
+/feedback.json
+
+# Secrets from local testing (keep templates)
+.env
+.env.*
+!.env.example
+
+# OS / editor noise
+.DS_Store
+.vscode/
+.idea/
