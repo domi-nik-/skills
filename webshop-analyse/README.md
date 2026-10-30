@@ -28,6 +28,8 @@ Eine vollständige Analyse dauert erfahrungsgemäß 20–30 Minuten, weil viele 
 ```
 webshop-analyse/
 ├── SKILL.md                      # Ablauf, Grundprinzipien, Ausgabeform
+├── README.md                     # diese Datei
+├── LICENSE                       # MIT
 └── references/
     ├── abschnitte.md             # was in jeden der 17 Abschnitte gehört
     ├── technik-sicherheit.md     # passiver Technik-, Hosting- und Sicherheitscheck
@@ -37,14 +39,14 @@ webshop-analyse/
 
 ## Installation
 
-Siehe [Installationsanleitung im Repo-README](../README.md#how-to-install-a-skill). Fertige `.skill`-Dateien gibt es auf der [Releases-Seite](https://github.com/domi-nik-/skills/releases), sobald ein Release getaggt ist.
+Siehe [Installationsanleitung im Repo-README](https://github.com/domi-nik-/skills#how-to-install-a-skill). Fertige `.skill`-Dateien gibt es auf der [Releases-Seite](https://github.com/domi-nik-/skills/releases), sobald ein Release getaggt ist.
 
-Der Skill nutzt Websuche und Webseitenabruf; beides muss in Claude aktiviert sein.
+Der Skill nutzt Websuche und Webseitenabruf; beides muss in Claude aktiviert sein. Er enthält nur Anweisungen und Nachschlagedateien – keine Skripte, keine Paketinstallationen.
 
 ## Grenzen und Hinweise
 
 - **Keine Rechtsberatung.** Die Rechtsliste trägt ein Stand-Datum und veraltet; der Skill weist Claude an, jeden Punkt vor Verwendung neu zu recherchieren. Rechtliche Punkte immer von Anwalt oder Rechtstexte-Anbieter prüfen lassen.
-- **Nur für eigene Shops oder im Auftrag.** Der Sicherheitsteil ist für Betreiber und deren Berater gedacht. Gefundene Schwachstellen gehören in das Dokument für den Betreiber, nicht in öffentliche Kanäle.
+- **Nur für eigene Shops oder im Auftrag.** Der Sicherheitsteil ist für Betreiber und deren Berater gedacht. Gefundene Schwachstellen gehören in das Dokument für den Betreiber, nicht in öffentliche Kanäle. Bei Analysen fremder Shops (z. B. Wettbewerber) nennt der Skill ohne Rückfrage keine konkreten Lücken.
 - **Keine internen Daten.** Ohne Zugriff auf Analytics, Search Console oder Umsatzzahlen bleiben Ladezeiten, Rankings und Umsatzpotenziale ungemessen – das steht dann so im Dokument.
 - **Deutschland-Fokus.** Für Shops in anderen Ländern werden Recht, Förderung und Marktplätze angepasst oder als „nicht geprüft“ gekennzeichnet.
 

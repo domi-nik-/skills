@@ -5,7 +5,7 @@ Ziel: Shopsystem, Versionen, Hosting und E-Mail-Absicherung ermitteln und mit ö
 ## 1. Shopsystem und Plugins erkennen
 - Meta-Generator-Tags im Seitenkopf (WebFetch liefert sie als `meta-generator`), z. B. Page-Builder- oder Shopsystem-Namen mit Versionsnummer; Hinweise auf Shopify, Shopware, JTL, WooCommerce, Magento.
 - Unterschiedliche Generator-Versionen auf verschiedenen Seiten deuten auf Seiten-Cache oder Beta-Versionen hin – erwähnen.
-- WordPress-Plugins: öffentliche `readme.txt` unter `/wp-content/plugins/<slug>/readme.txt` (z. B. `woocommerce`, `elementor-pro`). Das ist eine Standarddatei, kein versteckter Pfad.
+- WordPress-Plugins: öffentliche `readme.txt` unter `/wp-content/plugins/<slug>/readme.txt` – nur für Plugins, deren Slug bereits im Seitenquelltext sichtbar ist (z. B. in Asset-URLs `/wp-content/plugins/<slug>/…` oder im Generator-Tag). Keine Slugs durchprobieren. Die readme ist eine Standarddatei, kein versteckter Pfad.
 
 ## 2. Version sauber bestimmen
 Achtung Falle: Das Feld „Stable tag“ in einer readme ist nicht zuverlässig die installierte Version (bei WooCommerce bleibt es z. B. auf der Vorversion stehen, während der Changelog schon die neue Version zeigt).
@@ -30,7 +30,7 @@ Gefälschte Mails im Namen der Marke sind bei bekannten B2C-Shops oft das realis
 ## 5. Sicherheitslücken abgleichen
 - Websuche nach „<Plugin> vulnerability <Jahr>“, Datenbanken: Patchstack, Wordfence Intelligence, CVE-Seiten.
 - Tabelle: Lücke (Art, CVSS, verlinkt) | betroffene Versionen | behoben in | betrifft Kunden? (mit Begründung).
-- Bedingungen der Ausnutzbarkeit nennen, soweit öffentlich bekannt und von außen sichtbar (z. B. „nur mit Formular mit Datei-Upload-Feld; Kontaktformular hat keins“). Keine Anleitung zur Ausnutzung wiedergeben.
+- Bedingungen der Ausnutzbarkeit nennen, soweit öffentlich bekannt und von außen sichtbar (z. B. „nur ausnutzbar mit bestimmtem Formulartyp“). Keine Anleitung zur Ausnutzung wiedergeben.
 - Aktiv ausgenutzte Lücken besonders hervorheben.
 
 ## 6. Sofortmaßnahmen (Checkliste)

@@ -6,7 +6,7 @@ Kernaussage meist: Marktplätze selektiv, Fachhandel/Distribution oft der größ
 Gebühren vor dem Schreiben aktuell recherchieren und verlinken (sie ändern sich häufig). Tabelle: Marktplatz | Kosten | Fit | Risiko | Empfehlung.
 Typische Kandidaten in DE (Passung prüfen, nicht alle aufnehmen):
 - **OTTO Market** – Grundgebühr + Provision, kuratiert, eher ältere/kaufkräftige Kunden; Premium-Produkte oft passend.
-- **Amazon** – größte Reichweite; Gesamtkosten inkl. Versand/Retouren/Werbung hoch; direkter Preisvergleich mit Billigware; Empfehlung meist „begrenzter Test“ mit Markenregistrierung (setzt eingetragene Marke voraus).
+- **Amazon** – größte Reichweite; Gesamtkosten inkl. Versand/Retouren/Werbung hoch; direkter Preisvergleich mit Billigware; Empfehlung meist „begrenzter Test“ mit Markenregistrierung (Brand Registry; setzt eine eingetragene oder zumindest angemeldete Marke voraus).
 - **eBay** – gewerbliche Provision je Kategorie + Bestellgebühr; eher für B-Ware/Restposten.
 - **Kaufland** – später/optional.
 - **Branchen-/kuratierte Marktplätze** (z. B. Douglas Partnerprogramm für Beauty, Galaxus für CH, Faire für Großhandel an Boutiquen; Faire Direct für Bestandskunden provisionsfrei).
@@ -15,7 +15,7 @@ Voraussetzungen: GTIN/EAN, Pflichtangaben (GPSR, WEEE), marktplatztaugliche Verp
 ## Distributoren & Handelspartner
 Kandidaten nach Zielgruppen/Einsatzfeldern des Produkts suchen und verlinken – bevorzugt regional naheliegende zuerst nennen. Tabelle: Kanal | Kandidaten | Warum passend | Ansprache.
 Denkraster:
-- Fachhandel der Einsatzwelt (z. B. Camping/Caravan, Bad/Sanitär, Optik, Beauty)
+- Fachhandel der Einsatzwelt des Produkts (z. B. Sport, Garten, Küche, Beauty, Freizeit)
 - OEM/Erstausstattung (Produkt wird ab Werk verbaut)
 - Objektgeschäft (Hotellerie, Ausstatter, Innenarchitekten)
 - Design/Lifestyle (Concept Stores, Design-Onlineshops, Manufakturversender)

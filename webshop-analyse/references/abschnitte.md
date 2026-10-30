@@ -93,7 +93,7 @@ Siehe `vertrieb.md`.
 
 ## 14. Kostenhebel
 - Nur mit Daten des Nutzers konkret werden; sonst Methode beschreiben (Kostenaufschlüsselung anfordern).
-- Herstellkosten (z. B. Elektronik): Kostenblöcke-Tabelle, Hebel-Tabelle (Potenzial, Aufwand, Redesign nötig?), Risiken (Konformität/CE, „Made in Germany“, Kompatibilität, Qualität), Vorgehen, offene Fragen.
+- Herstellkosten (z. B. Bauteile, Zulieferteile, Verpackung): Kostenblöcke-Tabelle, Hebel-Tabelle (Potenzial, Aufwand, Redesign nötig?), Risiken (Konformität/CE, „Made in Germany“, Kompatibilität, Qualität), Vorgehen, offene Fragen.
 - Lieferantenabhängigkeit/Rechte an Entwicklungen (falls Thema): siehe `recht-de.md`, Abschnitt Lieferanten.
 - Weitere Hebel: Variantenkomplexität (Module statt Kombinationen lagern), Versand, Retouren, Plattformprovisionen, Marketing, Messen, Einkauf, Zahlungsgebühren.
 - Shopsystem-Wechsel (z. B. WooCommerce ↔ Shopify): Vergleichstabelle mit verlinkten aktuellen Preisen; SEO-Risiko durch URL-Struktur; Empfehlung erst nach Gesamtkostenrechnung, als Entscheidung des Kunden kennzeichnen.
